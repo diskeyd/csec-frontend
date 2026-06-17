@@ -1,0 +1,47 @@
+[
+  {
+    "id": "pdf-rf",
+    "name": "PDF Random Forest",
+    "type": "Random Forest (500 estimators)",
+    "explain": "SHAP / TreeExplainer",
+    "accuracy": 98.9,
+    "data": "CIC-Evasive-PDFMal2022",
+    "status": "활성"
+  },
+  {
+    "id": "pe-cnn",
+    "name": "PE 파일 CNN (Byteplot)",
+    "type": "CNN (256×256 Byteplot, ResNet-18)",
+    "explain": "Grad-CAM",
+    "accuracy": 96.2,
+    "data": "DikeDataset + BODMAS",
+    "status": "활성"
+  },
+  {
+    "id": "ofc-enc",
+    "name": "문서 파일 CNN Encoder",
+    "type": "CNN Encoder (OOXML Byteplot)",
+    "explain": "Grad-CAM",
+    "accuracy": 94.1,
+    "data": "MalOffice-2024 + UCSB Macro",
+    "status": "활성"
+  },
+  {
+    "id": "url-bert",
+    "name": "URL BERT 분류기",
+    "type": "BERT (Fine-tuned)",
+    "explain": "Attention Map",
+    "accuracy": 95.3,
+    "data": "PhishTank 2024 + Alexa Top-1M",
+    "status": "활성"
+  },
+  {
+    "id": "heur",
+    "name": "휴리스틱 아카이브 분석기",
+    "type": "Rule-based (정적 규칙 트리 + 엔트로피)",
+    "explain": "규칙 트리거 목록",
+    "accuracy": 91.8,
+    "data": "내부 레이블링 데이터셋",
+    "status": "활성"
+  }
+]

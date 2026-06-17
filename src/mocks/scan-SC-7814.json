@@ -1,0 +1,150 @@
+{
+  "scanId": "SC-7814",
+  "verdict": "malicious",
+  "confidence": 0.941,
+  "threshold": 0.80,
+  "modelId": "pdf-rf",
+  "modelDisplayName": "PDF Random Forest",
+  "fileMeta": {
+    "name": "phishing_resume.pdf",
+    "sizeBytes": 312480,
+    "mimeType": "application/pdf",
+    "category": "pdf",
+    "sha256": "c7e3a2f1b84d60912e4c7a3f1b84d60912e4c7a3f1b84d60912e4c7a3f1b84d",
+    "uploadedAt": "2026-06-06T14:22:07",
+    "source": "upload"
+  },
+  "reasons": [
+    {
+      "id": "r-7814-01",
+      "title": "/OpenAction 자동 실행",
+      "detail": "PDF 열기 시 /OpenAction 엔트리가 트리거되어 URI 액션을 자동 호출합니다. 사용자 상호작용 없이 외부 URL이 요청될 수 있습니다.",
+      "severity": "critical",
+      "impactPct": 88
+    },
+    {
+      "id": "r-7814-02",
+      "title": "피싱 URI 패턴 감지",
+      "detail": "PDF 내 URI 액션이 이력서 열람 페이지로 위장한 외부 도메인(http://94.102.49.190/resume-view)을 참조합니다. 자격증명 수집 또는 드라이브바이 다운로드가 의심됩니다.",
+      "severity": "high",
+      "impactPct": 74
+    },
+    {
+      "id": "r-7814-03",
+      "title": "내포된 파일 스트림",
+      "detail": "/EmbeddedFile 키워드가 존재하며 파일 스트림이 표준 이력서 문서에서 기대되는 크기를 초과합니다. 숨겨진 페이로드 삽입이 의심됩니다.",
+      "severity": "high",
+      "impactPct": 61
+    },
+    {
+      "id": "r-7814-04",
+      "title": "작성자 메타데이터 불일치",
+      "detail": "Author 필드가 잘 알려진 구직 플랫폼 이름으로 위조되어 있으나 Producer 및 CreationDate와 일치하지 않습니다.",
+      "severity": "medium",
+      "impactPct": 38
+    }
+  ],
+  "explainability": {
+    "kind": "shap",
+    "explainerType": "TreeExplainer",
+    "modelId": "pdf-rf",
+    "baselineScore": 0.31,
+    "features": [
+      {
+        "featureName": "/OpenAction",
+        "shapValue": 0.26,
+        "baselineValue": 0.08,
+        "actualValue": 1
+      },
+      {
+        "featureName": "/URI",
+        "shapValue": 0.22,
+        "baselineValue": 0.06,
+        "actualValue": 1
+      },
+      {
+        "featureName": "/EmbeddedFile",
+        "shapValue": 0.18,
+        "baselineValue": 0.03,
+        "actualValue": 1
+      },
+      {
+        "featureName": "/JS",
+        "shapValue": 0.11,
+        "baselineValue": 0.05,
+        "actualValue": 0
+      },
+      {
+        "featureName": "obj_count",
+        "shapValue": 0.08,
+        "baselineValue": 0.0,
+        "actualValue": 176
+      },
+      {
+        "featureName": "/Launch",
+        "shapValue": 0.05,
+        "baselineValue": 0.02,
+        "actualValue": 1
+      },
+      {
+        "featureName": "/AcroForm",
+        "shapValue": 0.03,
+        "baselineValue": 0.07,
+        "actualValue": 0
+      },
+      {
+        "featureName": "/Encrypt",
+        "shapValue": -0.02,
+        "baselineValue": 0.12,
+        "actualValue": 0
+      }
+    ],
+    "positiveLabel": "악성 방향 기여",
+    "negativeLabel": "정상 방향 기여"
+  },
+  "attackChain": [
+    {
+      "step": 1,
+      "phase": "Initial Access",
+      "description": "이력서로 위장한 악성 PDF가 이메일 또는 구직 플랫폼 메시지를 통해 피해자에게 전달됩니다.",
+      "severity": "high",
+      "basis": "static",
+      "mitreTacticId": "TA0001"
+    },
+    {
+      "step": 2,
+      "phase": "Execution",
+      "description": "PDF 열기 즉시 /OpenAction이 URI 액션을 트리거하여 외부 피싱 서버에 자동으로 연결을 시도합니다.",
+      "severity": "critical",
+      "basis": "static",
+      "mitreTacticId": "TA0002"
+    },
+    {
+      "step": 3,
+      "phase": "Credential Access",
+      "description": "피싱 랜딩 페이지가 이력서 열람 포털로 위장하여 사용자의 자격증명(이메일·비밀번호) 입력을 유도할 수 있습니다.",
+      "severity": "high",
+      "basis": "model-estimate",
+      "mitreTacticId": "TA0006"
+    },
+    {
+      "step": 4,
+      "phase": "Collection",
+      "description": "내포된 파일 스트림이 추가 페이로드를 전달하거나 시스템 정보를 수집하는 데 활용될 수 있습니다.",
+      "severity": "high",
+      "basis": "model-estimate",
+      "mitreTacticId": "TA0009"
+    }
+  ],
+  "recommendedActions": [
+    "해당 파일을 즉시 격리하고 발신자와의 통신을 차단하십시오.",
+    "내포된 URI 도메인(94.102.49.190)을 방화벽 및 DNS 차단 목록에 등록하십시오.",
+    "파일을 수신한 이메일 계정의 자격증명을 즉시 변경하십시오.",
+    "동일 발신지로부터 수신된 다른 파일 또는 링크를 검토하십시오."
+  ],
+  "isFalsePositive": false,
+  "fpReportedAt": null,
+  "analyzedAt": "2026-06-06T14:22:29",
+  "durationMs": 2213,
+  "reportId": null
+}

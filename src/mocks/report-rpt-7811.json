@@ -1,0 +1,20 @@
+{
+  "reportId": "rpt-7811",
+  "scanId": "SC-7811",
+  "generatedAt": "2026-06-06T16:23:41",
+  "generatedBy": "chatgpt-api",
+  "summary": "분석 대상 파일 'Q1_macros.xlsm'은 신뢰도 91.2%로 악성 파일로 판별되었습니다. 오피스 문서 CNN 인코더(ofc-enc) 모델은 OOXML 컨테이너 구조를 바이트플롯으로 변환하여 분석하였으며, VBA 프로젝트 스트림 영역의 활성화 패턴이 알려진 매크로 기반 드로퍼 계열과 높은 유사도를 보였습니다. Workbook_Open 이벤트 핸들러를 통한 자동 실행, Shell() 함수를 이용한 외부 명령 실행, Chr() 기반 문자열 난독화 등 복합 고위험 지표가 확인되었습니다. 해당 파일을 즉시 격리하고, 파일을 열었던 시스템에 대해 프로세스 트리 및 PowerShell 실행 이력을 점검하며, 조직 매크로 정책 강화 및 유사 첨부 파일에 대한 이메일 게이트웨이 필터 규칙 추가를 권고합니다.",
+  "pageCount": 3,
+  "fileMeta": {
+    "name": "Q1_macros.xlsm",
+    "sizeBytes": 524890,
+    "mimeType": "application/vnd.ms-excel.sheet.macroEnabled.12",
+    "category": "office",
+    "sha256": "c9d3e5f1a2b4780d3e9c5f1a2b4780d3e9c5f1a2b4780d3e9c5f1a2b4780d3e9",
+    "uploadedAt": "2026-06-06T16:22:11",
+    "source": "upload"
+  },
+  "verdict": "malicious",
+  "confidence": 0.912,
+  "threshold": 0.80
+}

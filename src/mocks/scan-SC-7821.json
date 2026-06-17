@@ -1,0 +1,158 @@
+{
+  "scanId": "SC-7821",
+  "verdict": "malicious",
+  "confidence": 0.964,
+  "threshold": 0.80,
+  "modelId": "pdf-rf",
+  "modelDisplayName": "PDF Random Forest",
+  "fileMeta": {
+    "name": "invoice_2026Q1.pdf",
+    "sizeBytes": 847213,
+    "mimeType": "application/pdf",
+    "category": "pdf",
+    "sha256": "a3f2c1d8e4b75069c2f1a3e8d4b75069c2f1a3e8d4b75069c2f1a3e8d4b75069",
+    "uploadedAt": "2026-06-07T09:12:04",
+    "source": "upload"
+  },
+  "reasons": [
+    {
+      "id": "r-7821-01",
+      "title": "난독화 JavaScript 임베딩",
+      "detail": "PDF 스트림 내부에 다중 레이어로 인코딩된 JavaScript 코드가 확인되었습니다. eval() 기반 실행 패턴이 포함되어 있어 동적 페이로드 실행이 가능합니다.",
+      "severity": "critical",
+      "impactPct": 92
+    },
+    {
+      "id": "r-7821-02",
+      "title": "AcroForm 외부 도메인 호출",
+      "detail": "AcroForm 필드의 submitURL이 비정상 외부 도메인(http://185.220.101.47/collect)을 가리키고 있습니다. 폼 제출 시 사용자 데이터가 공격자 서버로 전송될 수 있습니다.",
+      "severity": "high",
+      "impactPct": 78
+    },
+    {
+      "id": "r-7821-03",
+      "title": "익스플로잇 패턴 일치 (CVE-2024-43534)",
+      "detail": "Adobe Acrobat Reader의 정수 오버플로 취약점(CVE-2024-43534)을 악용하는 바이트 시퀀스가 탐지되었습니다. 취약한 버전에서 임의 코드 실행이 가능합니다.",
+      "severity": "high",
+      "impactPct": 65
+    },
+    {
+      "id": "r-7821-04",
+      "title": "메타데이터 위조",
+      "detail": "CreationDate, Author, Producer 필드가 합법적 문서 생성 도구처럼 위조되어 있습니다. XMP 메타데이터와 문서 스트림 간 불일치가 확인됩니다.",
+      "severity": "medium",
+      "impactPct": 41
+    }
+  ],
+  "explainability": {
+    "kind": "shap",
+    "explainerType": "TreeExplainer",
+    "modelId": "pdf-rf",
+    "baselineScore": 0.31,
+    "features": [
+      {
+        "featureName": "/JS",
+        "shapValue": 0.28,
+        "baselineValue": 0.05,
+        "actualValue": 1
+      },
+      {
+        "featureName": "/JavaScript",
+        "shapValue": 0.27,
+        "baselineValue": 0.04,
+        "actualValue": 1
+      },
+      {
+        "featureName": "/OpenAction",
+        "shapValue": 0.20,
+        "baselineValue": 0.08,
+        "actualValue": 1
+      },
+      {
+        "featureName": "/EmbeddedFile",
+        "shapValue": 0.15,
+        "baselineValue": 0.03,
+        "actualValue": 1
+      },
+      {
+        "featureName": "obj_count",
+        "shapValue": 0.09,
+        "baselineValue": 0.0,
+        "actualValue": 214
+      },
+      {
+        "featureName": "/AcroForm",
+        "shapValue": 0.06,
+        "baselineValue": 0.07,
+        "actualValue": 1
+      },
+      {
+        "featureName": "/Launch",
+        "shapValue": 0.04,
+        "baselineValue": 0.02,
+        "actualValue": 1
+      },
+      {
+        "featureName": "/Encrypt",
+        "shapValue": -0.03,
+        "baselineValue": 0.12,
+        "actualValue": 0
+      }
+    ],
+    "positiveLabel": "악성 방향 기여",
+    "negativeLabel": "정상 방향 기여"
+  },
+  "attackChain": [
+    {
+      "step": 1,
+      "phase": "Initial Access",
+      "description": "악성 PDF 파일이 이메일 첨부파일 또는 다운로드를 통해 피해자 시스템에 전달됩니다.",
+      "severity": "high",
+      "basis": "static",
+      "mitreTacticId": "TA0001"
+    },
+    {
+      "step": 2,
+      "phase": "Execution",
+      "description": "PDF 리더가 문서를 열면 /OpenAction 트리거에 의해 난독화된 JavaScript가 자동 실행됩니다.",
+      "severity": "critical",
+      "basis": "static",
+      "mitreTacticId": "TA0002"
+    },
+    {
+      "step": 3,
+      "phase": "Exploitation",
+      "description": "CVE-2024-43534 취약점을 통해 힙 메모리 손상이 발생하고 임의 코드 실행 권한이 획득됩니다.",
+      "severity": "critical",
+      "basis": "static",
+      "mitreTacticId": "TA0002"
+    },
+    {
+      "step": 4,
+      "phase": "Collection",
+      "description": "AcroForm submitURL을 통해 피해자 시스템의 사용자 데이터가 공격자 서버로 유출됩니다.",
+      "severity": "high",
+      "basis": "model-estimate",
+      "mitreTacticId": "TA0009"
+    },
+    {
+      "step": 5,
+      "phase": "Command and Control",
+      "description": "외부 도메인과의 통신 채널이 확립되어 추가 페이로드 다운로드 또는 명령 수신이 이루어질 수 있습니다.",
+      "severity": "high",
+      "basis": "model-estimate",
+      "mitreTacticId": "TA0011"
+    }
+  ],
+  "recommendedActions": [
+    "해당 파일을 즉시 격리하고 네트워크에서 분리하십시오.",
+    "파일을 열었던 시스템에 대해 전체 멀웨어 스캔을 실시하십시오.",
+    "Adobe Acrobat Reader를 최신 버전으로 업데이트하여 CVE-2024-43534 취약점을 패치하십시오.",
+    "AcroForm 외부 호출 도메인(185.220.101.47)을 방화벽 및 DNS 차단 목록에 등록하십시오."
+  ],
+  "isFalsePositive": false,
+  "fpReportedAt": null,
+  "analyzedAt": "2026-06-07T09:12:31",
+  "durationMs": 2847,
+  "reportId": "rpt-7821"
+}

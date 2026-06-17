@@ -1,0 +1,20 @@
+{
+  "reportId": "rpt-7821",
+  "scanId": "SC-7821",
+  "generatedAt": "2026-06-07T09:13:05",
+  "generatedBy": "chatgpt-api",
+  "summary": "분석 대상 파일 'invoice_2026Q1.pdf'는 신뢰도 96.4%로 악성 파일로 판별되었습니다. 파일 내부에 다중 레이어 난독화 JavaScript, AcroForm 기반 외부 도메인 호출, CVE-2024-43534 익스플로잇 패턴, 메타데이터 위조 총 4가지 고위험 지표가 확인되었으며, 즉각적인 격리 및 관련 시스템 점검이 요구됩니다. 해당 파일을 열었거나 수신한 경우 보안 팀에 즉시 신고하고, Adobe Acrobat Reader 패치 적용 및 외부 호출 도메인의 네트워크 차단을 우선적으로 조치하시기 바랍니다.",
+  "pageCount": 4,
+  "fileMeta": {
+    "name": "invoice_2026Q1.pdf",
+    "sizeBytes": 847213,
+    "mimeType": "application/pdf",
+    "category": "pdf",
+    "sha256": "a3f2c1d8e4b75069c2f1a3e8d4b75069c2f1a3e8d4b75069c2f1a3e8d4b75069",
+    "uploadedAt": "2026-06-07T09:12:04",
+    "source": "upload"
+  },
+  "verdict": "malicious",
+  "confidence": 0.964,
+  "threshold": 0.80
+}

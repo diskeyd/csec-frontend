@@ -1,0 +1,36 @@
+{
+  "scanId": "SC-7820",
+  "verdict": "clean",
+  "confidence": 0.041,
+  "threshold": 0.80,
+  "modelId": "ofc-enc",
+  "modelDisplayName": "문서 파일 CNN Encoder",
+  "fileMeta": {
+    "name": "quarterly_report.docx",
+    "sizeBytes": 215340,
+    "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "category": "office",
+    "sha256": "e5f7a9b1c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7",
+    "uploadedAt": "2026-06-07T10:55:33",
+    "source": "upload"
+  },
+  "reasons": [
+    {
+      "id": "r-7820-01",
+      "title": "악성 패턴 미탐지",
+      "detail": "분석 결과 알려진 악성 패턴, 의심스러운 매크로, 외부 리소스 참조, 익스플로잇 시그니처가 탐지되지 않았습니다. 파일은 정상적인 OOXML 구조를 갖추고 있습니다.",
+      "severity": "info",
+      "impactPct": 0
+    }
+  ],
+  "explainability": null,
+  "attackChain": null,
+  "recommendedActions": [
+    "파일은 안전한 것으로 분석되었습니다. 정상적으로 사용하시기 바랍니다."
+  ],
+  "isFalsePositive": false,
+  "fpReportedAt": null,
+  "analyzedAt": "2026-06-07T10:55:51",
+  "durationMs": 1182,
+  "reportId": null
+}

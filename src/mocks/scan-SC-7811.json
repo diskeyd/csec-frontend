@@ -1,0 +1,118 @@
+{
+  "scanId": "SC-7811",
+  "verdict": "malicious",
+  "confidence": 0.912,
+  "threshold": 0.80,
+  "modelId": "ofc-enc",
+  "modelDisplayName": "문서 파일 CNN Encoder",
+  "fileMeta": {
+    "name": "Q1_macros.xlsm",
+    "sizeBytes": 524890,
+    "mimeType": "application/vnd.ms-excel.sheet.macroEnabled.12",
+    "category": "office",
+    "sha256": "c9d3e5f1a2b4780d3e9c5f1a2b4780d3e9c5f1a2b4780d3e9c5f1a2b4780d3e9",
+    "uploadedAt": "2026-06-06T16:22:11",
+    "source": "upload"
+  },
+  "reasons": [
+    {
+      "id": "r-7811-01",
+      "title": "자동 실행 VBA 매크로 탐지 (AutoOpen/Workbook_Open)",
+      "detail": "파일 내 VBA 프로젝트에 Workbook_Open 이벤트 핸들러가 포함되어 있으며, 문서 열기 시 자동으로 실행되는 코드가 확인되었습니다. Shell() 함수를 통한 외부 명령 실행 패턴이 포함되어 있습니다.",
+      "severity": "critical",
+      "impactPct": 89
+    },
+    {
+      "id": "r-7811-02",
+      "title": "AutoOpen 바이트 패턴 일치",
+      "detail": "OOXML 컨테이너 내 vbaProject.bin 스트림의 바이트 패턴이 알려진 Emotet 및 QakBot 드로퍼 계열 악성 매크로 샘플과 높은 유사도(cosine similarity 0.87)를 보입니다.",
+      "severity": "high",
+      "impactPct": 72
+    },
+    {
+      "id": "r-7811-03",
+      "title": "난독화된 문자열 연결 패턴",
+      "detail": "VBA 코드 내에서 Chr() 함수와 문자열 분할·연결 기법을 조합하여 실행 명령을 동적으로 구성하는 패턴이 탐지되었습니다. 정적 분석 및 시그니처 탐지 우회를 목적으로 합니다.",
+      "severity": "high",
+      "impactPct": 61
+    }
+  ],
+  "explainability": {
+    "kind": "gradcam",
+    "modelId": "ofc-enc",
+    "bytePlotImageUrl": null,
+    "heatmapOverlayUrl": null,
+    "highlightedRegions": [
+      {
+        "x": 40,
+        "y": 32,
+        "w": 96,
+        "h": 48,
+        "intensity": 0.88,
+        "label": "vbaProject.bin 스트림 구간 (AutoOpen 매크로 코드 집중)"
+      },
+      {
+        "x": 160,
+        "y": 80,
+        "w": 56,
+        "h": 40,
+        "intensity": 0.54,
+        "label": "OOXML 메타데이터 이상 구간 (선언 불일치)"
+      }
+    ],
+    "note": "이 모델은 OOXML 문서 파일을 바이트플롯으로 변환하여 CNN Encoder에 입력합니다. Grad-CAM 활성화 영역은 픽셀 좌표(0–255)로 표현되며, 파일 내부 스트림 경계와 정확히 대응하지 않을 수 있습니다. VBA 피처 상세(함수명, 문자열 값 등)는 이 모델의 직접 출력이 아니므로 참고용으로만 해석하십시오. 바이트플롯 이미지 및 히트맵 오버레이 자산은 현재 제공되지 않습니다."
+  },
+  "attackChain": [
+    {
+      "step": 1,
+      "phase": "Initial Access",
+      "description": "스피어피싱 이메일에 첨부된 Excel 매크로 파일이 피해자에게 전달됩니다.",
+      "severity": "medium",
+      "basis": "static",
+      "mitreTacticId": "TA0001"
+    },
+    {
+      "step": 2,
+      "phase": "Execution",
+      "description": "피해자가 파일을 열고 매크로를 활성화하면 Workbook_Open 핸들러가 자동 실행됩니다.",
+      "severity": "critical",
+      "basis": "static",
+      "mitreTacticId": "TA0002"
+    },
+    {
+      "step": 3,
+      "phase": "Defense Evasion",
+      "description": "난독화된 문자열 연결로 구성된 PowerShell 명령이 Shell()을 통해 실행되어 EDR 탐지를 우회합니다.",
+      "severity": "high",
+      "basis": "model-estimate",
+      "mitreTacticId": "TA0005"
+    },
+    {
+      "step": 4,
+      "phase": "Command and Control",
+      "description": "외부 서버에서 2차 페이로드(드로퍼)를 다운로드하여 메모리에 로드합니다.",
+      "severity": "high",
+      "basis": "model-estimate",
+      "mitreTacticId": "TA0011"
+    },
+    {
+      "step": 5,
+      "phase": "Persistence",
+      "description": "2차 페이로드가 레지스트리 또는 예약 작업을 통해 시스템에 지속성을 확립합니다.",
+      "severity": "high",
+      "basis": "model-estimate",
+      "mitreTacticId": "TA0003"
+    }
+  ],
+  "recommendedActions": [
+    "해당 파일을 즉시 격리하고 매크로 실행 여부를 확인하십시오.",
+    "파일을 열었던 시스템에 대해 PowerShell 실행 로그 및 프로세스 트리를 점검하십시오.",
+    "조직 전체의 매크로 실행 정책을 검토하고 신뢰할 수 없는 출처의 매크로를 기본 차단하도록 설정하십시오.",
+    "유사 파일명 및 발신자 패턴을 기준으로 이메일 게이트웨이 필터 규칙을 추가하십시오."
+  ],
+  "isFalsePositive": false,
+  "fpReportedAt": null,
+  "analyzedAt": "2026-06-06T16:22:58",
+  "durationMs": 3921,
+  "reportId": "rpt-7811"
+}

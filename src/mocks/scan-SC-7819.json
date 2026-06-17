@@ -1,0 +1,118 @@
+{
+  "scanId": "SC-7819",
+  "verdict": "malicious",
+  "confidence": 0.887,
+  "threshold": 0.80,
+  "modelId": "pe-cnn",
+  "modelDisplayName": "PE 파일 CNN (Byteplot)",
+  "fileMeta": {
+    "name": "setup_v2.exe",
+    "sizeBytes": 3145728,
+    "mimeType": "application/x-msdownload",
+    "category": "pe",
+    "sha256": "b7e1d4a2f3c6890e5a2b7c4d1f8e6390e5a2b7c4d1f8e6390e5a2b7c4d1f8e63",
+    "uploadedAt": "2026-06-07T08:45:17",
+    "source": "upload"
+  },
+  "reasons": [
+    {
+      "id": "r-7819-01",
+      "title": "고엔트로피 섹션 탐지 (패킹 추정)",
+      "detail": "파일의 .text 및 .data 섹션에서 엔트로피 값 7.82~7.94가 측정되었습니다. 이는 일반적인 컴파일된 코드(6.0~7.2)보다 현저히 높으며, UPX 또는 커스텀 패커에 의해 압축·암호화된 코드의 특징에 부합합니다.",
+      "severity": "high",
+      "impactPct": 74
+    },
+    {
+      "id": "r-7819-02",
+      "title": "바이트플롯 시각 패턴 — 알려진 악성 샘플과 유사",
+      "detail": "256×256 그레이스케일 바이트플롯 이미지가 DikeDataset 훈련 데이터 내 랜섬웨어 및 트로이목마 계열 샘플과 높은 시각적 유사성을 보입니다. 정적 엔트로피 분석(7.82~7.94)에서 고엔트로피 구간이 확인되며, 이는 패킹 또는 암호화된 페이로드의 특징과 일치합니다.",
+      "severity": "high",
+      "impactPct": 68
+    },
+    {
+      "id": "r-7819-03",
+      "title": "의심스러운 임포트 테이블",
+      "detail": "VirtualAlloc, WriteProcessMemory, CreateRemoteThread API를 조합하여 임포트하고 있으며, 이는 프로세스 인젝션 기법에 일반적으로 사용되는 패턴입니다.",
+      "severity": "critical",
+      "impactPct": 83
+    }
+  ],
+  "explainability": {
+    "kind": "gradcam",
+    "modelId": "pe-cnn",
+    "bytePlotImageUrl": null,
+    "heatmapOverlayUrl": null,
+    "highlightedRegions": [
+      {
+        "x": 26,
+        "y": 16,
+        "w": 80,
+        "h": 64,
+        "intensity": 0.91,
+        "label": "고엔트로피 구간 (패킹 추정) — 픽셀 좌표 기반 추정, 실제 파일 오프셋과 다를 수 있음"
+      },
+      {
+        "x": 128,
+        "y": 96,
+        "w": 48,
+        "h": 32,
+        "intensity": 0.67,
+        "label": "PE 헤더 이상 구간 (섹션 정렬 불일치)"
+      }
+    ],
+    "note": "이 모델은 256×256 그레이스케일 바이트플롯 이미지를 입력으로 사용합니다. Grad-CAM 활성화 영역은 픽셀 좌표(0–255)로 표현되며, 실제 파일 오프셋과 정확히 대응하지 않을 수 있습니다. PE 개별 피처(엔트로피 수치, API 이름 등)는 이 모델의 직접 출력이 아니므로 참고용으로만 해석하십시오. 바이트플롯 이미지 및 히트맵 오버레이 자산은 현재 제공되지 않습니다."
+  },
+  "attackChain": [
+    {
+      "step": 1,
+      "phase": "Initial Access",
+      "description": "정상 소프트웨어 설치 파일로 위장하여 사용자가 자발적으로 실행하도록 유도합니다.",
+      "severity": "medium",
+      "basis": "static",
+      "mitreTacticId": "TA0001"
+    },
+    {
+      "step": 2,
+      "phase": "Defense Evasion",
+      "description": "패킹된 페이로드가 런타임에 메모리에 언패킹되어 정적 분석 및 시그니처 기반 탐지를 우회합니다.",
+      "severity": "high",
+      "basis": "static",
+      "mitreTacticId": "TA0005"
+    },
+    {
+      "step": 3,
+      "phase": "Execution",
+      "description": "VirtualAlloc/WriteProcessMemory/CreateRemoteThread API를 이용한 프로세스 인젝션으로 악성 코드가 정상 프로세스 컨텍스트에서 실행됩니다.",
+      "severity": "critical",
+      "basis": "model-estimate",
+      "mitreTacticId": "TA0002"
+    },
+    {
+      "step": 4,
+      "phase": "Persistence",
+      "description": "레지스트리 Run 키 또는 스케줄된 작업을 통해 시스템 재부팅 후에도 지속성이 유지됩니다.",
+      "severity": "high",
+      "basis": "model-estimate",
+      "mitreTacticId": "TA0003"
+    },
+    {
+      "step": 5,
+      "phase": "Command and Control",
+      "description": "외부 C2 서버와 암호화된 채널을 통해 명령을 수신하고 추가 페이로드를 다운로드할 수 있습니다.",
+      "severity": "high",
+      "basis": "model-estimate",
+      "mitreTacticId": "TA0011"
+    }
+  ],
+  "recommendedActions": [
+    "해당 실행 파일을 즉시 격리하고 실행을 중단하십시오.",
+    "파일이 실행된 시스템에 대해 메모리 포렌식 및 프로세스 인젝션 여부를 점검하십시오.",
+    "레지스트리 Run 키 및 스케줄 작업에 비정상적인 항목이 등록되어 있는지 확인하십시오.",
+    "네트워크 트래픽 로그를 검토하여 C2 통신 흔적을 식별하십시오."
+  ],
+  "isFalsePositive": false,
+  "fpReportedAt": null,
+  "analyzedAt": "2026-06-07T08:46:03",
+  "durationMs": 4512,
+  "reportId": "rpt-7819"
+}

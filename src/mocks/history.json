@@ -1,0 +1,98 @@
+[
+  {
+    "scanId": "SC-7821",
+    "fileName": "invoice_2026Q1.pdf",
+    "fileCategory": "pdf",
+    "verdict": "malicious",
+    "confidence": 0.964,
+    "threshold": 0.80,
+    "modelId": "pdf-rf",
+    "sizeLabel": "827 KB",
+    "analyzedAt": "2026-06-07T09:12:31",
+    "hasFixture": true
+  },
+  {
+    "scanId": "SC-7820",
+    "fileName": "quarterly_report.docx",
+    "fileCategory": "office",
+    "verdict": "clean",
+    "confidence": 0.041,
+    "threshold": 0.80,
+    "modelId": "ofc-enc",
+    "sizeLabel": "210 KB",
+    "analyzedAt": "2026-06-07T10:55:51",
+    "hasFixture": true
+  },
+  {
+    "scanId": "SC-7819",
+    "fileName": "setup_v2.exe",
+    "fileCategory": "pe",
+    "verdict": "malicious",
+    "confidence": 0.887,
+    "threshold": 0.80,
+    "modelId": "pe-cnn",
+    "sizeLabel": "3.0 MB",
+    "analyzedAt": "2026-06-07T08:46:03",
+    "hasFixture": true
+  },
+  {
+    "scanId": "SC-7818",
+    "fileName": "team_offsite.zip",
+    "fileCategory": "archive",
+    "verdict": "suspicious",
+    "confidence": 0.642,
+    "threshold": 0.80,
+    "modelId": "heur",
+    "sizeLabel": "18.0 MB",
+    "analyzedAt": "2026-06-07T11:04:12",
+    "hasFixture": true
+  },
+  {
+    "scanId": "SC-7817",
+    "fileName": "assets_bundle.zip",
+    "fileCategory": "archive",
+    "verdict": "clean",
+    "confidence": 0.022,
+    "threshold": 0.80,
+    "modelId": "heur",
+    "sizeLabel": "48 KB",
+    "analyzedAt": "2026-06-06T18:31:07",
+    "hasFixture": false
+  },
+  {
+    "scanId": "SC-7816",
+    "fileName": "monthly_payroll.xlsx",
+    "fileCategory": "office",
+    "verdict": "clean",
+    "confidence": 0.038,
+    "threshold": 0.80,
+    "modelId": "ofc-enc",
+    "sizeLabel": "142 KB",
+    "analyzedAt": "2026-06-06T14:17:52",
+    "hasFixture": false
+  },
+  {
+    "scanId": "SC-7814",
+    "fileName": "phishing_resume.pdf",
+    "fileCategory": "pdf",
+    "verdict": "malicious",
+    "confidence": 0.941,
+    "threshold": 0.80,
+    "modelId": "pdf-rf",
+    "sizeLabel": "394 KB",
+    "analyzedAt": "2026-06-06T10:05:29",
+    "hasFixture": true
+  },
+  {
+    "scanId": "SC-7811",
+    "fileName": "Q1_macros.xlsm",
+    "fileCategory": "office",
+    "verdict": "malicious",
+    "confidence": 0.912,
+    "threshold": 0.80,
+    "modelId": "ofc-enc",
+    "sizeLabel": "513 KB",
+    "analyzedAt": "2026-06-06T16:22:58",
+    "hasFixture": true
+  }
+]
